@@ -2,10 +2,16 @@ function trimTrailingSlash(url: string): string {
   return url.replace(/\/+$/, '');
 }
 
+const DEFAULT_PUBLIC_API = 'https://eldragox-prelims-analyzer.hf.space';
+
 function getApiBase(): string {
   const envBase = process.env.NEXT_PUBLIC_API_URL?.trim();
-  if (envBase) return trimTrailingSlash(envBase);
-  return '';
+  if (!envBase) return DEFAULT_PUBLIC_API;
+  const normalized = trimTrailingSlash(envBase);
+  if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(normalized)) {
+    return DEFAULT_PUBLIC_API;
+  }
+  return normalized;
 }
 
 const API_BASE = getApiBase();
